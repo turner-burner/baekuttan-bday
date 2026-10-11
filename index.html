@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Lil Cutie!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Caveat+Brush&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blush: #fde6e1;
+    --peach: #ffd3c4;
+    --cream: #fffaf5;
+    --rose: #c43f5f;
+    --rose-dark: #a22d4a;
+    --wine: #4f1b2b;
+    --gold: #e8b46a;
+    --k: 1; /* decoration scale */
+    --flip: .85s;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 8vw;
+    overflow-x: hidden;
+    font-family: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+    color: var(--wine);
+    text-align: center;
+    background:
+      radial-gradient(60vmax 60vmax at 12% 8%, var(--peach) 0%, transparent 60%),
+      radial-gradient(55vmax 55vmax at 92% 95%, #f9b9c4 0%, transparent 60%),
+      var(--blush);
+    background-attachment: fixed;
+  }
+
+  /* ---------- floating decorations ---------- */
+  .deco {
+    position: absolute;
+    width: calc(var(--s) * 1px * var(--k));
+    height: auto;
+    left: var(--x);
+    top: var(--y);
+    pointer-events: none;
+    user-select: none;
+    animation: drift var(--d) ease-in-out var(--delay) infinite;
+    will-change: transform;
+    filter: drop-shadow(0 6px 8px rgba(120, 30, 50, .18));
+  }
+  .deco.far { position: fixed; opacity: .35; filter: blur(.5px); z-index: 0; }
+  .deco.near { z-index: 3; }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) rotate(calc(var(--r) * -1)); }
+    25%      { transform: translate(var(--dx), calc(var(--dy) * -1)) rotate(0deg); }
+    50%      { transform: translate(0, calc(var(--dy) * -2)) rotate(var(--r)); }
+    75%      { transform: translate(calc(var(--dx) * -1), calc(var(--dy) * -1)) rotate(0deg); }
+  }
+
+  /* ---------- flipping card ---------- */
+  .stage { position: relative; width: min(420px, 84vw); z-index: 1; }
+  .card { position: relative; z-index: 2; perspective: 1400px; }
+  .flipper {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform var(--flip) cubic-bezier(.45, .05, .25, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .face {
+    grid-area: 1 / 1;
+    min-height: 360px;
+    padding: 34px 28px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--cream);
+    border: 1px solid rgba(196, 63, 95, .18);
+    border-radius: 28px;
+    box-shadow: 0 2px 0 rgba(255,255,255,.8) inset, 0 24px 50px -18px rgba(120, 30, 50, .35);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .face.back { transform: rotateY(180deg); }
+  .face.last { cursor: default; }
+
+  h1 {
+    margin: 0 0 14px;
+    font-family: "Caveat Brush", "Caveat", cursive;
+    font-weight: 400;
+    font-size: clamp(40px, 11vw, 54px);
+    line-height: 1.05;
+    color: var(--rose);
+  }
+  .gif {
+    width: 100%;
+    max-width: 300px;
+    max-height: 250px;
+    object-fit: contain;
+    margin-bottom: 16px;
+    border-radius: 18px;
+  }
+  p {
+    margin: 6px 0;
+    font-size: 26px;
+    line-height: 1.25;
+    font-weight: 500;
+    color: var(--rose-dark);
+  }
+  button {
+    margin-top: 20px;
+    padding: 8px 30px 10px;
+    font: 700 25px/1 "Caveat", "Segoe Print", cursive;
+    color: #fff;
+    background: var(--rose);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 8px 18px -8px rgba(196, 63, 95, .8);
+    transition: background .2s, transform .2s;
+  }
+  button:hover { background: var(--rose-dark); transform: translateY(-2px) rotate(-1.5deg); }
+  button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+  .counter {
+    margin-top: 16px;
+    font-size: 22px;
+    min-height: 1em;
+    color: rgba(79, 27, 43, .6);
+  }
+
+  /* hearts that pop out on every click */
+  .pop {
+    position: fixed;
+    z-index: 10;
+    pointer-events: none;
+    font-size: var(--fs);
+    animation: pop 1.3s ease-out forwards;
+  }
+  @keyframes pop {
+    from { transform: translate(-50%, -50%) scale(.4); opacity: 1; }
+    to   { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) rotate(var(--pr)) scale(1); opacity: 0; }
+  }
+
+  @media (max-width: 520px) {
+    :root { --k: .68; }
+    .face { padding: 28px 20px 24px; }
+    p { font-size: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root { --flip: .01s; }
+    .deco { animation: none; }
+    .pop { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="card">
+    <div class="flipper" id="flipper">
+      <div class="face front" id="front"></div>
+      <div class="face back" id="back"></div>
+    </div>
+  </div>
+  <div class="counter" id="counter" aria-live="polite"></div>
+</div>
+
+<script>
+  /* ---------- your pages: edit the wording or swap GIFs here ---------- */
+  const pages = [
+    { title: "Happy Birthday, My Babluu! 💖🎂", btn: "Open now",
+      text: ["Click below to open your Birthday Card 😉️"] },
+    { img: "https://media.tenor.com/27dQ8ddrv3AAAAAi/wee.gif", alt: "Bubu cute wee GIF",
+      text: ["I can't believe you're getting older lol. Youre still my lil baby.<br>(Still remember the day you were born like it was yesterday)🥹️"] },
+    { img: "https://media.tenor.com/905u0Gsct30AAAAi/tkthao219-bubududu.gif", alt: "Princess bubu GIF",
+      text: ["You're my lil princess, and also my Queen. Being with you makes every moment feel worth it. 👑❤️"] },
+    { img: "https://media.tenor.com/F9Q3thp6tzUAAAAi/bubu-bubu-dudu.gif", alt: "Dudu spins Bubu",
+      text: ["Celebrating you because you gotta celebrate the little things in life (shawtie). Wishing you a year filled with lots of joy (and freedom ofc) 😌️"] },
+    { img: "https://media.tenor.com/6yBqtjeP1ekAAAAj/bubu-dudu-sseeyall.gif", alt: "Bubu Bday",
+      text: ["Even though you're technically an oldie now, don't worry. You're the youngest grandma (and the oldest baby) I know 🤭️"] },
+    { img: "https://media.tenor.com/0cNM_9li440AAAAi/dudu-giving-flowers-bubu-flowers.gif", alt: "Dudu giving flowers",
+      text: ["Couldn't get you flowers this year, but adjust with these for now oki. I swear I'll get you flowers later! <br>(From the nursery... right?)"] },
+    { img: "https://media.tenor.com/6eZ1FzFlcnIAAAAi/dudu-cheerleader.gif", alt: "Dudu Cheerleader",
+      text: ["You're always such a baddie, a diva, and go well with people everywhere you go. <br>I'll always be your Fan #1 tho."] },
+    { img: "https://media.tenor.com/wtYWWtrJDcgAAAAi/bubu.gif", alt: "Bubu cheek squish",
+      text: ["Sometimes I wonder how you're so unbelievably goshdarn cuteeee. Then I remember you're mine and start giggling (hehe) 😏️"] },
+    { img: "https://media.tenor.com/Rbv7ueFs8vAAAAAi/tkthao219-bubududu.gif", alt: "Bubu Dudu Talking",
+      text: ["The time I spend with you feels like home — you're my safe place and my biggest happiness. Happy Birthday, mi casa 🏠️"] },
+    { img: "https://media.tenor.com/stSkS3RJwh0AAAAi/tkthao219-bubududu.gif", alt: "Bubu being silly",
+      text: ["You make even the most boring moments fun. I always love our time together, even the happy little accidents and mistakes we make. 🙂‍↕️️"] },
+    { img: "https://media.tenor.com/V963h-HMxd0AAAAi/tkthao219-bubududu.gif", alt: "Dudu hugs Bubu", btn: "Read it again",
+      text: ["To my favorite person - You're irreplaceable, loved beyond words, and cherished today and always. Happy Birthday Baekuttawie! 🎂😘️",
+             "The End! Off to another wondeful year.. 🎉️"] }
+  ];
+  const LAST = pages.length - 1;
+
+  /* ---------- flip logic ---------- */
+  const flipper = document.getElementById('flipper');
+  const faces = [document.getElementById('front'), document.getElementById('back')];
+  const counter = document.getElementById('counter');
+  let current = 0, side = 0, rot = 0, busy = false;
+
+  function render(p, i) {
+    return (p.title ? `<h1>${p.title}</h1>` : '') +
+      (p.img ? `<img class="gif" src="${p.img}" alt="${p.alt}">` : '') +
+      p.text.map(t => `<p>${t}</p>`).join('') +
+      `<button type="button" data-act="${i === LAST ? 'restart' : 'next'}">${p.btn || 'Next'}</button>`;
+  }
+  function fill(face, i) {
+    face.innerHTML = render(pages[i], i);
+    face.classList.toggle('last', i === LAST);
+  }
+  function go(i, dir) {
+    if (busy || i < 0 || i > LAST) return;
+    busy = true;
+    side = 1 - side;                     // flip onto the other face
+    fill(faces[side], i);
+    rot += dir * 180;
+    flipper.style.transform = `rotateY(${rot}deg)`;
+    current = i;
+    counter.textContent = i === 0 ? '' : i + ' / ' + LAST;
+    if (i === LAST) setTimeout(() => burst(innerWidth / 2, innerHeight / 2, 36), 450);
+    setTimeout(() => busy = false, 700);
+  }
+
+  /* ---------- hearts ---------- */
+  const bits = ['❤️', '💖', '💕', '🌸', '✨'];
+  function burst(x, y, n) {
+    for (let k = 0; k < n; k++) {
+      const el = document.createElement('span');
+      el.className = 'pop';
+      el.textContent = bits[Math.floor(Math.random() * bits.length)];
+      const a = Math.random() * Math.PI * 2, r = 60 + Math.random() * (n > 10 ? 220 : 90);
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.setProperty('--fs', (16 + Math.random() * 16) + 'px');
+      el.style.setProperty('--px', Math.cos(a) * r + 'px');
+      el.style.setProperty('--py', (Math.sin(a) * r - 50) + 'px');
+      el.style.setProperty('--pr', (Math.random() * 80 - 40) + 'deg');
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1400);
+    }
+  }
+
+  /* ---------- input: click button or anywhere on the card, or use arrow keys ---------- */
+  document.getElementById('stage').addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    const onCard = e.target.closest('.card');
+    if (!onCard) return;
+    let x = e.clientX, y = e.clientY;
+    if (!x && !y) { const b = onCard.getBoundingClientRect(); x = b.left + b.width / 2; y = b.top + b.height / 2; }
+    if (btn && btn.dataset.act === 'restart') { go(0, -1); burst(x, y, 8); }
+    else if (current < LAST) { go(current + 1, 1); burst(x, y, 8); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') go(current + 1, 1);
+    if (e.key === 'ArrowLeft') go(current - 1, -1);
+  });
+
+  fill(faces[0], 0);
+  pages.forEach(p => { if (p.img) new Image().src = p.img; });   // preload GIFs so flips are smooth
+
+  /* ---------- floating decorations ---------- */
+  // img = file number (1-6), x/y = position relative to the card (%), s = size in px,
+  // dx/dy = sway distance (px), r = tilt (deg), d = loop duration (s), delay = start offset (s)
+  const near = [
+    { img: 1, x: -16, y: -7,  s: 72, dx: 14, dy: 10, r: 8,  d: 11, delay: 0 },
+    { img: 2, x: 86,  y: -9,  s: 66, dx: 12, dy: 12, r: 10, d: 13, delay: -3 },
+    { img: 3, x: -19, y: 40,  s: 62, dx: 16, dy: 9,  r: 7,  d: 12, delay: -6 },
+    { img: 4, x: 95,  y: 46,  s: 74, dx: 13, dy: 11, r: 9,  d: 14, delay: -2 },
+    { img: 5, x: -12, y: 93,  s: 68, dx: 12, dy: 10, r: 8,  d: 10, delay: -5 },
+    { img: 6, x: 84,  y: 96,  s: 72, dx: 15, dy: 12, r: 10, d: 15, delay: -8 },
+    { img: 3, x: 42,  y: -11, s: 44, dx: 10, dy: 8,  r: 12, d: 9,  delay: -4 },
+    { img: 1, x: 93,  y: 76,  s: 46, dx: 9,  dy: 9,  r: 9,  d: 12, delay: -7 },
+    { img: 5, x: -7,  y: 66,  s: 42, dx: 10, dy: 7,  r: 11, d: 10, delay: -1 },
+    { img: 2, x: 48,  y: 102, s: 48, dx: 12, dy: 8,  r: 8,  d: 13, delay: -9 }
+  ];
+  // faint, larger pieces scattered across the whole screen (x/y in vw/vh)
+  const far = [
+    { img: 4, x: 4,  y: 14, s: 110, dx: 18, dy: 14, r: 6, d: 18, delay: -3 },
+    { img: 6, x: 82, y: 8,  s: 120, dx: 20, dy: 12, r: 7, d: 20, delay: -9 },
+    { img: 2, x: 8,  y: 78, s: 100, dx: 16, dy: 14, r: 6, d: 17, delay: -5 },
+    { img: 1, x: 80, y: 74, s: 115, dx: 18, dy: 13, r: 7, d: 19, delay: -12 }
+  ];
+  function make(o, cls, unit) {
+    const el = document.createElement('img');
+    el.src = o.img + '.svg';
+    el.alt = '';
+    el.setAttribute('aria-hidden', 'true');
+    el.className = 'deco ' + cls;
+    el.style.setProperty('--x', o.x + unit.x);
+    el.style.setProperty('--y', o.y + unit.y);
+    el.style.setProperty('--s', o.s);
+    el.style.setProperty('--dx', o.dx + 'px');
+    el.style.setProperty('--dy', o.dy + 'px');
+    el.style.setProperty('--r', o.r + 'deg');
+    el.style.setProperty('--d', o.d + 's');
+    el.style.setProperty('--delay', o.delay + 's');
+    return el;
+  }
+  const stage = document.getElementById('stage');
+  near.forEach(o => stage.appendChild(make(o, 'near', { x: '%', y: '%' })));
+  far.forEach(o => document.body.appendChild(make(o, 'far', { x: 'vw', y: 'vh' })));
+</script>
+</body>
+</html>
